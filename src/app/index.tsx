@@ -22,9 +22,9 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.botao}
-        onPress={() => router.push("/frequencia")}
+        onPress={() => router.push("/relatorio")}
       >
-        <Text style={styles.textoBotao}>Frequência</Text>
+        <Text style={styles.textoBotao}>Relatório</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
