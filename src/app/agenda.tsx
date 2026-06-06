@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
+import { carregarAlunos } from "../storage/alunosStorage";
 type Aula = {
   id: number;
   data: string;
@@ -15,38 +16,55 @@ type Aula = {
   aluno: string;
   materia: string;
 };
+type Aluno = {
+  id: number;
+  nome: string;
+  telefone: string;
+  serie: string;
+};
 
 export default function AgendaScreen() {
-  const [data, setData] = useState("");
-  const [horario, setHorario] = useState("");
-  const [aluno, setAluno] = useState("");
-  const [materia, setMateria] = useState("");
+const [data, setData] = useState("");
+const [horario, setHorario] = useState("");
+const [alunoSelecionado, setAlunoSelecionado] = useState("");
+const [materia, setMateria] = useState("");
 
-  const [aulas, setAulas] = useState<Aula[]>([]);
+const [alunos, setAlunos] = useState<Aluno[]>([]);
+const [aulas, setAulas] = useState<Aula[]>([]);
 
-  function salvarAula() {
-    if (!aluno.trim()) {
-      alert("Informe o aluno");
-      return;
-    }
 
-    const novaAula: Aula = {
-      id: Date.now(),
-      data,
-      horario,
-      aluno,
-      materia,
-    };
 
-    setAulas([...aulas, novaAula]);
-
-    setData("");
-    setHorario("");
-    setAluno("");
-    setMateria("");
+  useEffect(() => {
+  async function buscarAlunos() {
+    const dados = await carregarAlunos();
+    setAlunos(dados);
   }
 
-  return (
+  buscarAlunos();
+}, []);
+
+function salvarAula() {
+  if (!alunoSelecionado.trim()) {
+    alert("Informe o aluno");
+    return;
+  }
+
+  const novaAula: Aula = {
+    id: Date.now(),
+    data,
+    horario,
+    aluno: alunoSelecionado,
+    materia,
+  };
+
+  setAulas([...aulas, novaAula]);
+
+  setData("");
+  setHorario("");
+  setAlunoSelecionado("");
+  setMateria("");
+}
+return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Agenda de Aulas</Text>
 
@@ -64,12 +82,23 @@ export default function AgendaScreen() {
         onChangeText={setHorario}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Aluno"
-        value={aluno}
-        onChangeText={setAluno}
-      />
+  <Picker
+  selectedValue={alunoSelecionado}
+  onValueChange={(valor) => setAlunoSelecionado(valor)}
+>
+  <Picker.Item
+    label="Selecione um aluno"
+    value=""
+  />
+
+  {alunos.map((aluno) => (
+    <Picker.Item
+      key={aluno.id}
+      label={aluno.nome}
+      value={aluno.nome}
+    />
+  ))}
+</Picker>
 
       <TextInput
         style={styles.input}
@@ -102,7 +131,7 @@ export default function AgendaScreen() {
         )}
       />
     </View>
-  );
+);
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,6 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { carregarAlunos, salvarAlunos } from "../storage/alunosStorage";
+
+console.log(carregarAlunos);
+console.log(salvarAlunos);
 
 type Aluno = {
   id: number;
@@ -23,6 +27,20 @@ export default function AlunosScreen() {
 
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [idEdicao, setIdEdicao] = useState<number | null>(null);
+
+    useEffect(() => {
+    async function buscarAlunos() {
+      const dados = await carregarAlunos();
+      setAlunos(dados);
+    }
+
+    buscarAlunos();
+  }, []);
+
+  useEffect(() => {
+    salvarAlunos(alunos);
+  }, [alunos]);
+
 
 function adicionarAluno() {
   if (!nome.trim()) {
