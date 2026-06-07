@@ -2,6 +2,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -65,7 +66,10 @@ function salvarAula() {
   setMateria("");
 }
 return (
-    <View style={styles.container}>
+    <ScrollView
+  style={styles.container}
+  contentContainerStyle={{ paddingBottom: 40 }}
+>
       <Text style={styles.titulo}>Agenda de Aulas</Text>
 
       <TextInput
@@ -130,7 +134,7 @@ return (
 </View>
         )}
       />
-    </View>
+    </ScrollView>
 );
 }
 

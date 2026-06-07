@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -93,7 +94,10 @@ export default function FinanceiroScreen() {
     );
 
   return (
-    <View style={styles.container}>
+   <ScrollView
+  style={styles.container}
+  contentContainerStyle={{ paddingBottom: 40 }}
+>
       <Text style={styles.titulo}>Financeiro</Text>
 
       <View style={styles.dashboard}>
@@ -258,7 +262,7 @@ export default function FinanceiroScreen() {
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   );
 }
 

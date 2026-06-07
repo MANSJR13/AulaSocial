@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -63,7 +64,10 @@ export default function RelatorioScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+  style={styles.container}
+  contentContainerStyle={{ paddingBottom: 40 }}
+>
       <Text style={styles.titulo}>Relatório de Aula</Text>
 
       <TextInput
@@ -155,7 +159,7 @@ export default function RelatorioScreen() {
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   );
 }
 

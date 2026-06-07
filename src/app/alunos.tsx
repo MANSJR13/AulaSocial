@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -98,7 +99,10 @@ function adicionarAluno() {
   setIdEdicao(null);
 }
   return (
-    <View style={styles.container}>
+    <ScrollView
+  style={styles.container}
+  contentContainerStyle={{ paddingBottom: 40 }}
+>
       <Text style={styles.titulo}>Cadastro de Alunos</Text>
 
       <TextInput
@@ -161,7 +165,7 @@ function adicionarAluno() {
           </View>
         )}
       />
-    </View>
+    </ScrollView>
   );
 
 }
