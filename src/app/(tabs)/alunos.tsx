@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { carregarAlunos, salvarAlunos } from "../storage/alunosStorage";
-
+import { carregarAlunos, salvarAlunos } from "../../storage/alunosStorage";
 console.log(carregarAlunos);
 console.log(salvarAlunos);
 

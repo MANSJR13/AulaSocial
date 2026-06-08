@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   FlatList,
   ScrollView,
@@ -8,6 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  carregarLancamentos,
+  salvarLancamentos,
+} from "../../storage/financeiroStorage";
 
 type Lancamento = {
   id: number;
@@ -29,6 +34,21 @@ export default function FinanceiroScreen() {
   const [filtroMes, setFiltroMes] = useState("");
 
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
+
+  useEffect(() => {
+  async function buscarLancamentos() {
+    const dados =
+      await carregarLancamentos();
+
+    setLancamentos(dados);
+  }
+
+  buscarLancamentos();
+}, []);
+
+useEffect(() => {
+  salvarLancamentos(lancamentos);
+}, [lancamentos]);
 
   function salvarLancamento() {
     if (!aluno.trim()) {

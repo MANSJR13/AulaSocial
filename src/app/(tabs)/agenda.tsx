@@ -12,8 +12,8 @@ import {
 import {
   carregarAulas,
   salvarAulas,
-} from "../storage/agendaStorage";
-import { carregarAlunos } from "../storage/alunosStorage";
+} from "../../storage/agendaStorage";
+import { carregarAlunos } from "../../storage/alunosStorage";
 type Aula = {
   id: number;
   data: string;

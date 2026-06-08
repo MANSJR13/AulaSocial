@@ -12,7 +12,7 @@ import {
 import {
   carregarRelatorios,
   salvarRelatorios,
-} from "../storage/relatoriosStorage";
+} from "../../storage/relatoriosStorage";
 
 
 type Relatorio = {
