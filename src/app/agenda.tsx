@@ -9,6 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  carregarAulas,
+  salvarAulas,
+} from "../storage/agendaStorage";
 import { carregarAlunos } from "../storage/alunosStorage";
 type Aula = {
   id: number;
@@ -43,6 +47,20 @@ const [aulas, setAulas] = useState<Aula[]>([]);
 
   buscarAlunos();
 }, []);
+
+useEffect(() => {
+  async function buscarAulas() {
+    const dados = await carregarAulas();
+    setAulas(dados);
+  }
+
+  buscarAulas();
+}, []);
+
+useEffect(() => {
+  salvarAulas(aulas);
+}, [aulas]);
+
 
 function salvarAula() {
   if (!alunoSelecionado.trim()) {
