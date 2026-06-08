@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   FlatList,
   ScrollView,
@@ -8,6 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  carregarRelatorios,
+  salvarRelatorios,
+} from "../storage/relatoriosStorage";
+
 
 type Relatorio = {
   id: number;
@@ -26,14 +32,47 @@ export default function RelatorioScreen() {
   const [conteudo, setConteudo] = useState("");
   const [percepcao, setPercepcao] = useState("");
   const [observacoes, setObservacoes] = useState("");
-
+const [idEdicao, setIdEdicao] =
+  useState<number | null>(null);
   const [relatorios, setRelatorios] = useState<Relatorio[]>([]);
+  useEffect(() => {
+  async function buscarRelatorios() {
+    const dados = await carregarRelatorios();
+    setRelatorios(dados);
+  }
 
-  function salvarRelatorio() {
-    if (!aluno.trim()) {
-      alert("Informe o aluno");
-      return;
-    }
+  buscarRelatorios();
+}, []);
+useEffect(() => {
+  salvarRelatorios(relatorios);
+}, [relatorios]);
+
+function salvarRelatorio() {
+  if (!aluno.trim()) {
+    alert("Informe o aluno");
+    return;
+  }
+
+  if (idEdicao !== null) {
+    const relatoriosAtualizados = relatorios.map(
+      (relatorio) =>
+        relatorio.id === idEdicao
+          ? {
+              ...relatorio,
+              aluno,
+              data,
+              materia,
+              conteudo,
+              percepcao,
+              observacoes,
+            }
+          : relatorio
+    );
+
+    setRelatorios(relatoriosAtualizados);
+    setIdEdicao(null);
+
+  } else {
 
     const novoRelatorio: Relatorio = {
       id: Date.now(),
@@ -45,23 +84,37 @@ export default function RelatorioScreen() {
       observacoes,
     };
 
-    setRelatorios([...relatorios, novoRelatorio]);
-
-    limparCampos();
+    setRelatorios([
+      ...relatorios,
+      novoRelatorio,
+    ]);
   }
+
+  limparCampos();
+}
 
   function limparCampos() {
-    setAluno("");
-    setData("");
-    setMateria("");
-    setConteudo("");
-    setPercepcao("");
-    setObservacoes("");
-  }
-
+  setAluno("");
+  setData("");
+  setMateria("");
+  setConteudo("");
+  setPercepcao("");
+  setObservacoes("");
+  setIdEdicao(null);
+}
   function excluirRelatorio(id: number) {
     setRelatorios(relatorios.filter((r) => r.id !== id));
   }
+  function editarRelatorio(relatorio: Relatorio) {
+  setIdEdicao(relatorio.id);
+
+  setAluno(relatorio.aluno);
+  setData(relatorio.data);
+  setMateria(relatorio.materia);
+  setConteudo(relatorio.conteudo);
+  setPercepcao(relatorio.percepcao);
+  setObservacoes(relatorio.observacoes);
+}
 
   return (
     <ScrollView
@@ -156,6 +209,17 @@ export default function RelatorioScreen() {
             >
               <Text style={styles.textoBotao}>Excluir</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+  style={styles.botaoEditar}
+  onPress={() => editarRelatorio(item)}
+>
+ <Text style={styles.textoBotao}>
+  {idEdicao !== null
+    ? "Salvar Relatório"
+    : "Editar Relatório"}
+</Text>
+</TouchableOpacity>
           </View>
         )}
       />
@@ -238,4 +302,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 15,
   },
+
+  botaoEditar: {
+  backgroundColor: "#f0ad4e",
+  padding: 10,
+  borderRadius: 8,
+  marginTop: 15,
+},
 });

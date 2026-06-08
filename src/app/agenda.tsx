@@ -68,6 +68,8 @@ function salvarAula() {
     return;
   }
 
+
+
   if (idEdicao !== null) {
     const aulasAtualizadas = aulas.map((aula) =>
       aula.id === idEdicao
@@ -103,6 +105,14 @@ function salvarAula() {
   setMateria("");
 }
 
+  function limparCampos() {
+  setData("");
+  setHorario("");
+  setAlunoSelecionado("");
+  setMateria("");
+  setIdEdicao(null);
+}
+
 function editarAula(aula: Aula) {
   setIdEdicao(aula.id);
 
@@ -117,6 +127,8 @@ function excluirAula(id: number) {
     aulas.filter((aula) => aula.id !== id)
   );
 }
+
+
 
 return (
     <ScrollView
@@ -171,6 +183,16 @@ return (
         <Text style={styles.textoBotao}>Salvar Aula</Text>
       </TouchableOpacity>
 
+<TouchableOpacity
+  style={styles.botaoLimpar}
+  onPress={limparCampos}
+>
+  <Text style={styles.textoBotao}>
+    Limpar Campos
+  </Text>
+</TouchableOpacity>
+
+
       <FlatList
         data={aulas}
         keyExtractor={(item) => item.id.toString()}
@@ -200,6 +222,9 @@ return (
     Excluir
   </Text>
 </TouchableOpacity>
+
+
+
 </View>
         )}
       />
@@ -255,6 +280,13 @@ const styles = StyleSheet.create({
   color: "#1E88E5",
 },
 
+botaoLimpar: {
+  backgroundColor: "#6c757d",
+  padding: 15,
+  borderRadius: 8,
+  marginBottom: 20,
+},
+
 botaoEditar: {
   backgroundColor: "#f0ad4e",
   padding: 10,
@@ -268,4 +300,6 @@ botaoExcluir: {
   borderRadius: 8,
   marginTop: 10,
 },
+
+
 });
