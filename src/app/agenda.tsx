@@ -33,7 +33,7 @@ const [data, setData] = useState("");
 const [horario, setHorario] = useState("");
 const [alunoSelecionado, setAlunoSelecionado] = useState("");
 const [materia, setMateria] = useState("");
-
+const [idEdicao, setIdEdicao] = useState<number | null>(null);
 const [alunos, setAlunos] = useState<Aluno[]>([]);
 const [aulas, setAulas] = useState<Aula[]>([]);
 
@@ -68,21 +68,56 @@ function salvarAula() {
     return;
   }
 
-  const novaAula: Aula = {
-    id: Date.now(),
-    data,
-    horario,
-    aluno: alunoSelecionado,
-    materia,
-  };
+  if (idEdicao !== null) {
+    const aulasAtualizadas = aulas.map((aula) =>
+      aula.id === idEdicao
+        ? {
+            ...aula,
+            data,
+            horario,
+            aluno: alunoSelecionado,
+            materia,
+          }
+        : aula
+    );
 
-  setAulas([...aulas, novaAula]);
+    setAulas(aulasAtualizadas);
+    setIdEdicao(null);
+
+  } else {
+
+    const novaAula: Aula = {
+      id: Date.now(),
+      data,
+      horario,
+      aluno: alunoSelecionado,
+      materia,
+    };
+
+    setAulas([...aulas, novaAula]);
+  }
 
   setData("");
   setHorario("");
   setAlunoSelecionado("");
   setMateria("");
 }
+
+function editarAula(aula: Aula) {
+  setIdEdicao(aula.id);
+
+  setData(aula.data);
+  setHorario(aula.horario);
+  setAlunoSelecionado(aula.aluno);
+  setMateria(aula.materia);
+}
+
+function excluirAula(id: number) {
+  setAulas(
+    aulas.filter((aula) => aula.id !== id)
+  );
+}
+
 return (
     <ScrollView
   style={styles.container}
@@ -149,6 +184,22 @@ return (
   <Text>{item.horario}</Text>
   <Text>{item.aluno}</Text>
   <Text>{item.materia}</Text>
+  <TouchableOpacity
+  style={styles.botaoEditar}
+  onPress={() => editarAula(item)}
+>
+  <Text style={styles.textoBotao}>
+    Editar
+  </Text>
+</TouchableOpacity>
+<TouchableOpacity
+  style={styles.botaoExcluir}
+  onPress={() => excluirAula(item.id)}
+>
+  <Text style={styles.textoBotao}>
+    Excluir
+  </Text>
+</TouchableOpacity>
 </View>
         )}
       />
@@ -202,5 +253,19 @@ const styles = StyleSheet.create({
   fontWeight: "bold",
   marginBottom: 10,
   color: "#1E88E5",
+},
+
+botaoEditar: {
+  backgroundColor: "#f0ad4e",
+  padding: 10,
+  borderRadius: 8,
+  marginTop: 10,
+},
+
+botaoExcluir: {
+  backgroundColor: "#d9534f",
+  padding: 10,
+  borderRadius: 8,
+  marginTop: 10,
 },
 });
