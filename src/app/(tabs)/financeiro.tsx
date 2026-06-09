@@ -1,3 +1,4 @@
+import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -9,11 +10,11 @@ import {
   View,
 } from "react-native";
 import MaskInput from "react-native-mask-input";
+import { carregarAlunos } from "../../storage/alunosStorage";
 import {
   carregarLancamentos,
   salvarLancamentos,
 } from "../../storage/financeiroStorage";
-
 type Lancamento = {
   id: number;
   aluno: string;
@@ -21,6 +22,12 @@ type Lancamento = {
   descricao: string;
   valor: string;
   status: string;
+};
+type Aluno = {
+  id: number;
+  nome: string;
+  telefone: string;
+  serie: string;
 };
 
 export default function FinanceiroScreen() {
@@ -32,7 +39,7 @@ export default function FinanceiroScreen() {
 
   const [filtroAluno, setFiltroAluno] = useState("");
   const [filtroMes, setFiltroMes] = useState("");
-
+  const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const mascaraData = [
   /\d/,
@@ -46,6 +53,15 @@ export default function FinanceiroScreen() {
   /\d/,
   /\d/,
 ];
+
+useEffect(() => {
+  async function buscarAlunos() {
+    const dados = await carregarAlunos();
+    setAlunos(dados);
+  }
+
+  buscarAlunos();
+}, []);
 
   useEffect(() => {
   async function buscarLancamentos() {
@@ -142,12 +158,24 @@ useEffect(() => {
         </Text>
       </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Aluno"
-        value={aluno}
-        onChangeText={setAluno}
-      />
+
+<Picker
+  selectedValue={aluno}
+  onValueChange={(valor) => setAluno(valor)}
+>
+  <Picker.Item
+    label="Selecione um aluno"
+    value=""
+  />
+
+  {alunos.map((aluno) => (
+    <Picker.Item
+      key={aluno.id}
+      label={aluno.nome}
+      value={aluno.nome}
+    />
+  ))}
+</Picker>
 
  <MaskInput
   style={styles.input}
@@ -166,13 +194,23 @@ useEffect(() => {
         onChangeText={setDescricao}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Valor"
-        value={valor}
-        onChangeText={setValor}
-        keyboardType="numeric"
-      />
+<MaskInput
+  style={styles.input}
+  placeholder="Valor"
+  keyboardType="numeric"
+  value={valor}
+  onChangeText={(masked) =>
+    setValor(masked)
+  }
+  mask={[
+    /\d/,
+    /\d/,
+    /\d/,
+    ",",
+    /\d/,
+    /\d/,
+  ]}
+/>
 
       <Text style={styles.subtitulo}>
         Status
