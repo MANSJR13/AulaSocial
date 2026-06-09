@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import MaskInput from "react-native-mask-input";
 import { carregarAlunos, salvarAlunos } from "../../storage/alunosStorage";
 console.log(carregarAlunos);
 console.log(salvarAlunos);
@@ -111,12 +112,31 @@ function adicionarAluno() {
         onChangeText={setNome}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Telefone"
-        value={telefone}
-        onChangeText={setTelefone}
-      />
+      <MaskInput
+  style={styles.input}
+  placeholder="Telefone"
+  value={telefone}
+  onChangeText={(masked) =>
+    setTelefone(masked)
+  }
+  mask={[
+    "(",
+    /\d/,
+    /\d/,
+    ")",
+    " ",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+  ]}
+/>
 
       <TextInput
         style={styles.input}

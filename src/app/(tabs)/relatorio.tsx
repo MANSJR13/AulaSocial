@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import {
   FlatList,
   ScrollView,
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import MaskInput from "react-native-mask-input";
 import {
   carregarRelatorios,
   salvarRelatorios,
@@ -32,6 +32,18 @@ export default function RelatorioScreen() {
   const [conteudo, setConteudo] = useState("");
   const [percepcao, setPercepcao] = useState("");
   const [observacoes, setObservacoes] = useState("");
+  const mascaraData = [
+  /\d/,
+  /\d/,
+  "/",
+  /\d/,
+  /\d/,
+  "/",
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
 const [idEdicao, setIdEdicao] =
   useState<number | null>(null);
   const [relatorios, setRelatorios] = useState<Relatorio[]>([]);
@@ -130,13 +142,16 @@ function salvarRelatorio() {
         onChangeText={setAluno}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Data"
-        value={data}
-        onChangeText={setData}
-      />
 
+      <MaskInput
+  style={styles.input}
+  placeholder="Data"
+  value={data}
+  onChangeText={(masked) =>
+    setData(masked)
+  }
+  mask={mascaraData}
+/>
       <TextInput
         style={styles.input}
         placeholder="Matéria"

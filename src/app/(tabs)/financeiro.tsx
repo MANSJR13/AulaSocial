@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import {
   FlatList,
   ScrollView,
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import MaskInput from "react-native-mask-input";
 import {
   carregarLancamentos,
   salvarLancamentos,
@@ -34,6 +34,18 @@ export default function FinanceiroScreen() {
   const [filtroMes, setFiltroMes] = useState("");
 
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
+  const mascaraData = [
+  /\d/,
+  /\d/,
+  "/",
+  /\d/,
+  /\d/,
+  "/",
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
 
   useEffect(() => {
   async function buscarLancamentos() {
@@ -137,12 +149,15 @@ useEffect(() => {
         onChangeText={setAluno}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Data"
-        value={data}
-        onChangeText={setData}
-      />
+ <MaskInput
+  style={styles.input}
+  placeholder="Data"
+  value={data}
+  onChangeText={(masked) =>
+    setData(masked)
+  }
+  mask={mascaraData}
+/>
 
       <TextInput
         style={styles.input}

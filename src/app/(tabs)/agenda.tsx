@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import MaskInput from "react-native-mask-input";
 import {
   carregarAulas,
   salvarAulas,
@@ -36,8 +37,25 @@ const [materia, setMateria] = useState("");
 const [idEdicao, setIdEdicao] = useState<number | null>(null);
 const [alunos, setAlunos] = useState<Aluno[]>([]);
 const [aulas, setAulas] = useState<Aula[]>([]);
-
-
+const mascaraData = [
+  /\d/,
+  /\d/,
+  "/",
+  /\d/,
+  /\d/,
+  "/",
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
+const mascaraHora = [
+  /\d/,
+  /\d/,
+  ":",
+  /\d/,
+  /\d/,
+];
 
   useEffect(() => {
   async function buscarAlunos() {
@@ -137,19 +155,30 @@ return (
 >
       <Text style={styles.titulo}>Agenda de Aulas</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Data"
-        value={data}
-        onChangeText={setData}
-      />
+   <MaskInput
+  style={styles.input}
+  placeholder="Data"
+  value={data}
+  onChangeText={(masked) =>
+    setData(masked)
+  }
+  mask={mascaraData}
+/>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Horário"
-        value={horario}
-        onChangeText={setHorario}
-      />
+
+  <MaskInput
+  style={styles.input}
+  placeholder="Horário"
+  value={horario}
+  onChangeText={setHorario}
+  mask={[
+    /\d/,
+    /\d/,
+    ":",
+    /\d/,
+    /\d/,
+  ]}
+/>
 
   <Picker
   selectedValue={alunoSelecionado}
