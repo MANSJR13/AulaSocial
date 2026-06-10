@@ -36,9 +36,10 @@ export default function FinanceiroScreen() {
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
   const [status, setStatus] = useState("");
-
+  const [filtroStatus, setFiltroStatus] = useState("");
   const [filtroAluno, setFiltroAluno] = useState("");
   const [filtroMes, setFiltroMes] = useState("");
+  const [filtroAno, setFiltroAno] = useState(""); 
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const mascaraData = [
@@ -117,12 +118,32 @@ useEffect(() => {
     );
   }
 
-  const lancamentosFiltrados = lancamentos.filter(
-  (item) =>
-    item.aluno
-      .toLowerCase()
-      .includes(filtroAluno.toLowerCase()) &&
-    item.data.includes(filtroMes)
+const lancamentosFiltrados = lancamentos.filter(
+  (item) => {
+    const alunoOk =
+      item.aluno
+        .toLowerCase()
+        .includes(filtroAluno.toLowerCase());
+
+    const mesOk =
+      !filtroMes ||
+      item.data.substring(3, 5) === filtroMes;
+
+    const anoOk =
+      !filtroAno ||
+      item.data.substring(6, 10) === filtroAno;
+
+    const statusOk =
+      !filtroStatus ||
+      item.status === filtroStatus;
+
+    return (
+      alunoOk &&
+      mesOk &&
+      anoOk &&
+      statusOk
+    );
+  }
 );
 
   const totalRecebido = lancamentos
@@ -159,23 +180,25 @@ useEffect(() => {
       </View>
 
 
-<Picker
-  selectedValue={aluno}
-  onValueChange={(valor) => setAluno(valor)}
->
-  <Picker.Item
-    label="Selecione um aluno"
-    value=""
-  />
-
-  {alunos.map((aluno) => (
+<View style={styles.pickerContainer}>
+  <Picker
+    selectedValue={aluno}
+    onValueChange={(valor) => setAluno(valor)}
+  >
     <Picker.Item
-      key={aluno.id}
-      label={aluno.nome}
-      value={aluno.nome}
+      label="Selecione um aluno"
+      value=""
     />
-  ))}
-</Picker>
+
+    {alunos.map((aluno) => (
+      <Picker.Item
+        key={aluno.id}
+        label={aluno.nome}
+        value={aluno.nome}
+      />
+    ))}
+  </Picker>
+</View>
 
  <MaskInput
   style={styles.input}
@@ -259,8 +282,88 @@ useEffect(() => {
       </TouchableOpacity>
 
       <Text style={styles.subtitulo}>
-        Filtros
-      </Text>
+  Filtrar por Mês
+</Text>
+
+<View style={styles.containerFiltros}>
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroMes("")}
+  >
+    <Text style={styles.textoBotao}>
+      Todos
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroMes("06")}
+  >
+    <Text style={styles.textoBotao}>
+      Jun
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroMes("07")}
+  >
+    <Text style={styles.textoBotao}>
+      Jul
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroMes("08")}
+  >
+    <Text style={styles.textoBotao}>
+      Ago
+    </Text>
+  </TouchableOpacity>
+</View>
+
+<Text style={styles.subtitulo}>
+  Filtrar por Ano
+</Text>
+
+<View style={styles.containerFiltros}>
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroAno("")}
+  >
+    <Text style={styles.textoBotao}>
+      Todos
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroAno("2026")}
+  >
+    <Text style={styles.textoBotao}>
+      2026
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroAno("2027")}
+  >
+    <Text style={styles.textoBotao}>
+      2027
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroAno("2028")}
+  >
+    <Text style={styles.textoBotao}>
+      2028
+    </Text>
+  </TouchableOpacity>
+</View>
 
       <TextInput
         style={styles.input}
@@ -269,12 +372,38 @@ useEffect(() => {
         onChangeText={setFiltroAluno}
       />
 
-    <TextInput
-  style={styles.input}
-  placeholder="Filtrar por mês (06/2026)"
-  value={filtroMes}
-  onChangeText={setFiltroMes}
-/>
+      <Text style={styles.subtitulo}>
+  Filtrar por Status
+</Text>
+
+<View style={styles.containerStatus}>
+  <TouchableOpacity
+    style={styles.botaoFiltro}
+    onPress={() => setFiltroStatus("")}
+  >
+    <Text style={styles.textoBotao}>
+      Todos
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoPago}
+    onPress={() => setFiltroStatus("Pago")}
+  >
+    <Text style={styles.textoBotao}>
+      Pago
+    </Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.botaoPendente}
+    onPress={() => setFiltroStatus("Pendente")}
+  >
+    <Text style={styles.textoBotao}>
+      Pendente
+    </Text>
+  </TouchableOpacity>
+</View>
 
       <FlatList
         data={lancamentosFiltrados}
@@ -332,6 +461,8 @@ useEffect(() => {
                 Excluir
               </Text>
             </TouchableOpacity>
+
+
           </View>
         )}
       />
@@ -383,21 +514,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  botaoPago: {
-    flex: 1,
-    backgroundColor: "#28a745",
-    padding: 12,
-    borderRadius: 8,
-    marginRight: 5,
-  },
 
-  botaoPendente: {
-    flex: 1,
-    backgroundColor: "#ffc107",
-    padding: 12,
-    borderRadius: 8,
-    marginLeft: 5,
-  },
 
   statusSelecionado: {
     marginBottom: 15,
@@ -449,4 +566,44 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 15,
   },
+
+pickerContainer: {
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 8,
+  marginBottom: 10,
+  overflow: "hidden",
+},
+
+containerFiltros: {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  justifyContent: "flex-start",
+  marginBottom: 15,
+},
+
+botaoFiltro: {
+  width: 80,
+  backgroundColor: "#6c757d",
+  padding: 10,
+  borderRadius: 8,
+  margin: 4,
+},
+
+botaoPago: {
+  width: 90,
+  backgroundColor: "#28a745",
+  padding: 12,
+  borderRadius: 8,
+  marginRight: 5,
+},
+
+botaoPendente: {
+  width: 90,
+  backgroundColor: "#ffc107",
+  padding: 12,
+  borderRadius: 8,
+},
+
+
 });
