@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   FlatList,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 import MaskInput from "react-native-mask-input";
 import { carregarAlunos, salvarAlunos } from "../../storage/alunosStorage";
+
 console.log(carregarAlunos);
 console.log(salvarAlunos);
 
@@ -78,6 +80,14 @@ function adicionarAluno() {
     setTelefone("");
     setSerie("");
   }
+  }
+
+  function abrirWhatsApp(telefone: string) {
+  const numero = telefone.replace(/\D/g, "");
+
+  Linking.openURL(
+    `https://wa.me/55${numero}`
+  );
   }
 
   function excluirAluno(id: number) {
@@ -181,6 +191,17 @@ function adicionarAluno() {
 >
   <Text style={styles.textoBotao}>Excluir</Text>
 </TouchableOpacity>
+
+<TouchableOpacity
+  style={styles.botaoWhatsApp}
+  onPress={() =>
+    abrirWhatsApp(item.telefone)
+  }
+>
+  <Text style={styles.textoBotao}>
+    WhatsApp
+  </Text>
+</TouchableOpacity>
           </View>
         )}
       />
@@ -253,5 +274,12 @@ botaoLimpar: {
   padding: 15,
   borderRadius: 8,
   marginBottom: 20,
+},
+
+botaoWhatsApp: {
+  backgroundColor: "#25D366",
+  padding: 10,
+  borderRadius: 8,
+  marginTop: 10,
 },
 });

@@ -2,6 +2,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import {
   FlatList,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,6 +11,10 @@ import {
   View,
 } from "react-native";
 import MaskInput from "react-native-mask-input";
+import {
+  agendarNotificacao,
+  solicitarPermissao,
+} from "../../services/notificacoes";
 import {
   carregarAulas,
   salvarAulas,
@@ -30,6 +35,8 @@ type Aluno = {
 };
 
 export default function AgendaScreen() {
+console.log("solicitarPermissao", solicitarPermissao);
+console.log("agendarNotificacao", agendarNotificacao);  
 const [data, setData] = useState("");
 const [horario, setHorario] = useState("");
 const [alunoSelecionado, setAlunoSelecionado] = useState("");
@@ -66,6 +73,10 @@ const mascaraHora = [
   buscarAlunos();
 }, []);
 
+//useEffect(() => {
+//  solicitarPermissao();
+//}, []);
+
 useEffect(() => {
   async function buscarAulas() {
     const dados = await carregarAulas();
@@ -85,8 +96,6 @@ function salvarAula() {
     alert("Informe o aluno");
     return;
   }
-
-
 
   if (idEdicao !== null) {
     const aulasAtualizadas = aulas.map((aula) =>
@@ -117,10 +126,46 @@ function salvarAula() {
     setAulas([...aulas, novaAula]);
   }
 
+ // agendarNotificacao(
+ // alunoSelecionado,
+// horario
+//);
   setData("");
   setHorario("");
   setAlunoSelecionado("");
   setMateria("");
+}
+
+function enviarLembrete(aula: Aula) {
+  const alunoEncontrado = alunos.find(
+    (aluno) => aluno.nome === aula.aluno
+  );
+
+  if (!alunoEncontrado) {
+    alert("Aluno não encontrado");
+    return;
+  }
+
+  const telefone =
+    alunoEncontrado.telefone.replace(/\D/g, "");
+
+  const mensagem =
+`Olá ${aula.aluno}!
+
+Lembrete da sua aula.
+
+📅 Data: ${aula.data}
+🕒 Horário: ${aula.horario}
+📚 Matéria: ${aula.materia}
+
+Até logo!`;
+
+  const url =
+    `https://wa.me/55${telefone}?text=${encodeURIComponent(
+      mensagem
+    )}`;
+
+  Linking.openURL(url);
 }
 
   function limparCampos() {
@@ -147,7 +192,6 @@ function excluirAula(id: number) {
 }
 
 
-
 return (
     <ScrollView
   style={styles.container}
@@ -164,7 +208,6 @@ return (
   }
   mask={mascaraData}
 />
-
 
   <MaskInput
   style={styles.input}
@@ -252,7 +295,14 @@ return (
   </Text>
 </TouchableOpacity>
 
-
+<TouchableOpacity
+  style={styles.botaoWhatsApp}
+  onPress={() => enviarLembrete(item)}
+>
+  <Text style={styles.textoBotao}>
+    Enviar Lembrete
+  </Text>
+</TouchableOpacity>
 
 </View>
         )}
@@ -330,5 +380,11 @@ botaoExcluir: {
   marginTop: 10,
 },
 
+botaoWhatsApp: {
+  backgroundColor: "#25D366",
+  padding: 10,
+  borderRadius: 8,
+  marginTop: 10,
+},
 
 });
